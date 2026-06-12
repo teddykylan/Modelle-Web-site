@@ -54,11 +54,24 @@ export function LoginForm() {
             <Label htmlFor="password">Mot de passe</Label>
             <Input id="password" name="password" type="password" required />
           </div>
+
+          <div className="space-y-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => signIn("google")}
+            >
+              Continuer avec Google
+            </Button>
+          </div>
+
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Connexion..." : "Se connecter"}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
+
           Pas de compte?{" "}
           <Link href="/register" className="text-primary hover:underline">
             Inscrivez-vous

@@ -29,6 +29,8 @@ export function TemplateCard({ template }: TemplateCardProps) {
   const primaryImage = template.images.find((i) => i.isPrimary) ?? template.images[0];
   const price = getEffectiveTemplatePrice(template);
   const originalPrice = template.discountPrice ? Number(template.price) : null;
+  const authorName = template.seller?.user?.name ?? "Auteur inconnu";
+  const categoryName = template.category?.name ?? "Catégorie";
 
   return (
     <Link href={`/templates/${template.slug}`}>
@@ -60,7 +62,7 @@ export function TemplateCard({ template }: TemplateCardProps) {
                 {template.title}
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                {template.seller.user.name} · {template.category.name}
+                {authorName} · {categoryName}
               </p>
             </div>
           </div>

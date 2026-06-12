@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ templateId: string }>;
 }

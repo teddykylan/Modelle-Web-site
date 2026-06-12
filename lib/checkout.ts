@@ -4,9 +4,10 @@ import { sendPurchaseConfirmation, sendNewSaleEmail } from "@/lib/email";
 import { getAppUrl } from "@/lib/app-url";
 import { verifyPaystackTransaction } from "@/lib/paystack";
 
-export async function completePaymentByReference(reference: string, skipVerify = false) {
+export async function completePaymentByReference(reference: string | string[], skipVerify = false) {
+  const normalizedReference = Array.isArray(reference) ? reference[0] : reference;
   const payment = await prisma.payment.findUnique({
-    where: { providerId: reference },
+    where: { providerId: normalizedReference },
   });
 
   if (!payment) {
@@ -18,7 +19,7 @@ export async function completePaymentByReference(reference: string, skipVerify =
   }
 
   if (!skipVerify && process.env.PAYSTACK_SECRET_KEY) {
-    const verification = await verifyPaystackTransaction(reference);
+    const verification = await verifyPaystackTransaction(normalizedReference);
     const isSuccess =
       verification.status === true && verification.data?.status === "success";
 

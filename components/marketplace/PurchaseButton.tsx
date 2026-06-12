@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
 
 interface PurchaseButtonProps {
   templateId: string;
@@ -40,7 +41,7 @@ export function PurchaseButton({
     <Button className="w-full" asChild>
       <Link href={`/checkout/${templateId}`}>
         <ShoppingCart className="mr-2 h-4 w-4" />
-        Acheter — ${price.toFixed(2)}
+        Acheter — {formatPrice(price)}
       </Link>
     </Button>
   );

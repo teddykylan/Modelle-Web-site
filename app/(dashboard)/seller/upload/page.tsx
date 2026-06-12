@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { getCategories } from "@/lib/templates";
 import { UploadTemplateForm } from "@/components/seller/UploadTemplateForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function SellerUploadPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");

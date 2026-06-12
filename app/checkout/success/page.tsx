@@ -7,11 +7,13 @@ import { Footer } from "@/components/layout/Footer";
 import { completePaymentByReference } from "@/lib/checkout";
 
 interface PageProps {
-  searchParams: Promise<{ reference?: string; dev?: string }>;
+  searchParams: Promise<{ reference?: string | string[]; dev?: string | string[] }>;
 }
 
 export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
-  const { reference, dev } = await searchParams;
+  const { reference: referenceParam, dev: devParam } = await searchParams;
+  const reference = Array.isArray(referenceParam) ? referenceParam[0] : referenceParam;
+  const dev = Array.isArray(devParam) ? devParam[0] : devParam;
 
   let paymentOk = false;
   let errorMessage: string | null = null;

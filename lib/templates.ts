@@ -32,20 +32,20 @@ export async function getPublishedTemplates(params: TemplateListParams = {}) {
       : {}),
     ...(q
       ? {
-          OR: [
-            { title: { contains: q, mode: "insensitive" } },
-            { description: { contains: q, mode: "insensitive" } },
-            { techStack: { contains: q, mode: "insensitive" } },
-          ],
-        }
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { description: { contains: q, mode: "insensitive" } },
+          { techStack: { contains: q, mode: "insensitive" } },
+        ],
+      }
       : {}),
     ...(minPrice !== undefined || maxPrice !== undefined
       ? {
-          price: {
-            ...(minPrice !== undefined ? { gte: minPrice } : {}),
-            ...(maxPrice !== undefined ? { lte: maxPrice } : {}),
-          },
-        }
+        price: {
+          ...(minPrice !== undefined ? { gte: minPrice } : {}),
+          ...(maxPrice !== undefined ? { lte: maxPrice } : {}),
+        },
+      }
       : {}),
   };
 
@@ -70,8 +70,8 @@ export async function getPublishedTemplates(params: TemplateListParams = {}) {
         images: { where: { isPrimary: true }, take: 1 },
         tags: true,
       },
-    }),
-    prisma.template.count({ where }),
+    }).catch(() => []),
+    prisma.template.count({ where }).catch(() => 0),
   ]);
 
   return { templates, total, pages: Math.ceil(total / limit), page };
@@ -87,21 +87,21 @@ export async function getTemplateBySlug(slug: string) {
       files: true,
       tags: true,
     },
-  });
+  }).catch(() => null);
 }
 
 export async function getCategories() {
   return prisma.category.findMany({
     orderBy: { order: "asc" },
     include: { _count: { select: { templates: true } } },
-  });
+  }).catch(() => []);
 }
 
 export async function incrementTemplateViews(id: string) {
   await prisma.template.update({
     where: { id },
     data: { views: { increment: 1 } },
-  });
+  }).catch(() => { });
 }
 
 export async function getRelatedTemplates(categoryId: string, excludeId: string, limit = 4) {
@@ -115,8 +115,9 @@ export async function getRelatedTemplates(categoryId: string, excludeId: string,
     include: {
       images: { where: { isPrimary: true }, take: 1 },
       category: true,
+      seller: { include: { user: { select: { name: true } } } },
     },
-  });
+  }).catch(() => []);
 }
 
 export function getEffectivePrice(template: { price: Prisma.Decimal; discountPrice: Prisma.Decimal | null }) {

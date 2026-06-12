@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Package, TrendingUp, Upload } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function SellerDashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");

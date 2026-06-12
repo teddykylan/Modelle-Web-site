@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { uploadImage, uploadZip } from "@/lib/cloudinary";
+import { uploadImage, uploadZip, isCloudinaryConfigured } from "@/lib/cloudinary";
 
 const MAX_ZIP_SIZE = 50 * 1024 * 1024;
 
@@ -44,7 +44,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "File too large (max 50MB)" }, { status: 400 });
     }
 
-    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+    const useDevFallback = !isCloudinaryConfigured && process.env.NODE_ENV !== "production";
+    if (useDevFallback) {
       await prisma.templateFile.create({
         data: {
           templateId,
@@ -55,6 +56,13 @@ export async function POST(request: Request) {
         },
       });
       return NextResponse.json({ success: true, dev: true });
+    }
+
+    if (!isCloudinaryConfigured) {
+      return NextResponse.json(
+        { error: "Cloudinary non configuré. Vérifiez CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY et CLOUDINARY_API_SECRET." },
+        { status: 500 }
+      );
     }
 
     const uploaded = await uploadZip(buffer, file.name);
@@ -74,7 +82,8 @@ export async function POST(request: Request) {
 
     const existingImages = await prisma.templateImage.count({ where: { templateId } });
 
-    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+    const useDevFallback = !isCloudinaryConfigured && process.env.NODE_ENV !== "production";
+    if (useDevFallback) {
       await prisma.templateImage.create({
         data: {
           templateId,
@@ -85,6 +94,13 @@ export async function POST(request: Request) {
         },
       });
       return NextResponse.json({ success: true, dev: true });
+    }
+
+    if (!isCloudinaryConfigured) {
+      return NextResponse.json(
+        { error: "Cloudinary non configuré. Vérifiez CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY et CLOUDINARY_API_SECRET." },
+        { status: 500 }
+      );
     }
 
     const uploaded = await uploadImage(buffer);

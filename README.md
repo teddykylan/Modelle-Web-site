@@ -16,6 +16,8 @@ Marketplace de modèles de sites web modernes pour le Cameroun et l'Afrique.
 
 Guide complet : **[DEPLOY.md](DEPLOY.md)** (GitHub + Vercel + variables d'environnement).
 
+Option Netlify : **[DEPLOY_NETLIFY.md](DEPLOY_NETLIFY.md)** pour déployer sur Netlify.
+
 Résumé rapide :
 1. Créer un repo sur GitHub → `git push -u origin main`
 2. Importer sur [vercel.com/new](https://vercel.com/new)

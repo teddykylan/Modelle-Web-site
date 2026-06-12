@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { submitTemplateForReview } from "@/lib/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function SellerTemplatesPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");

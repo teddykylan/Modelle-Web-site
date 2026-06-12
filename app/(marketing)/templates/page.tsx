@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { TemplateGrid } from "@/components/marketplace/TemplateGrid";
 import { TemplateFilters } from "@/components/marketplace/TemplateFilters";
+import { SearchBar } from "@/components/marketplace/SearchBar";
 import { getPublishedTemplates, getCategories } from "@/lib/templates";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -38,12 +39,15 @@ export default async function TemplatesPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Templates</h1>
-        <p className="mt-2 text-muted-foreground">
-          {total} modèles disponibles
-          {params.q ? ` pour « ${params.q} »` : ""}
-        </p>
+      <div className="mb-8 space-y-4">
+        <div>
+          <h1 className="text-3xl font-bold">Templates</h1>
+          <p className="mt-2 text-muted-foreground">
+            {total} modèles disponibles
+            {params.q ? ` pour « ${params.q} »` : ""}
+          </p>
+        </div>
+        <SearchBar initialValue={params.q ?? ""} placeholder="Rechercher parmi les templates..." />
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[240px_1fr]">

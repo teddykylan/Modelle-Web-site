@@ -1,11 +1,29 @@
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
+const cloudKey = process.env.CLOUDINARY_API_KEY?.trim();
+const cloudSecret = process.env.CLOUDINARY_API_SECRET?.trim();
+
+export const isCloudinaryConfigured = Boolean(
+  cloudName && cloudKey && cloudSecret && cloudName.toLowerCase() !== "root"
+);
+
+if (isCloudinaryConfigured) {
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: cloudKey,
+    api_secret: cloudSecret,
+    secure: true,
+  });
+}
+
+export function ensureCloudinaryConfigured() {
+  if (!isCloudinaryConfigured) {
+    throw new Error(
+      "Cloudinary n'est pas configuré ou les identifiants sont invalides. Vérifiez CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY et CLOUDINARY_API_SECRET."
+    );
+  }
+}
 
 export { cloudinary };
 
@@ -13,13 +31,22 @@ export async function uploadImage(
   file: Buffer,
   folder = "templatehub/images"
 ): Promise<{ url: string; publicId: string }> {
+  ensureCloudinaryConfigured();
+
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
         { folder, resource_type: "image" },
         (error, result) => {
-          if (error || !result) reject(error ?? new Error("Upload failed"));
-          else resolve({ url: result.secure_url, publicId: result.public_id });
+          if (error || !result) {
+            reject(
+              error ?? new Error(
+                "Upload Cloudinary échoué. Vérifiez votre configuration Cloudinary."
+              )
+            );
+          } else {
+            resolve({ url: result.secure_url, publicId: result.public_id });
+          }
         }
       )
       .end(file);
@@ -31,6 +58,8 @@ export async function uploadZip(
   fileName: string,
   folder = "templatehub/files"
 ): Promise<{ url: string; publicId: string; size: number }> {
+  ensureCloudinaryConfigured();
+
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
@@ -40,13 +69,19 @@ export async function uploadZip(
           public_id: fileName.replace(/\.[^/.]+$/, ""),
         },
         (error, result) => {
-          if (error || !result) reject(error ?? new Error("Upload failed"));
-          else
+          if (error || !result) {
+            reject(
+              error ?? new Error(
+                "Upload Cloudinary échoué. Vérifiez votre configuration Cloudinary."
+              )
+            );
+          } else {
             resolve({
               url: result.secure_url,
               publicId: result.public_id,
               size: result.bytes,
             });
+          }
         }
       )
       .end(file);

@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { TemplateGrid } from "@/components/marketplace/TemplateGrid";
 import { getPublishedTemplates, getCategories } from "@/lib/templates";
 
@@ -28,7 +30,19 @@ export default async function CategoryPage({ params }: PageProps) {
       )}
       <p className="mt-1 text-sm text-muted-foreground">{total} templates</p>
       <div className="mt-8">
-        <TemplateGrid templates={templates} />
+        {total === 0 ? (
+          <div className="rounded-3xl border bg-card p-10 text-center">
+            <h2 className="text-2xl font-semibold">Aucun template disponible</h2>
+            <p className="mt-3 text-muted-foreground">
+              Cette catégorie est prête à accueillir de vrais modèles. Les vendeurs peuvent uploader leur propre template.
+            </p>
+            <Button size="lg" className="mt-6" asChild>
+              <Link href="/register?role=seller">Devenir vendeur</Link>
+            </Button>
+          </div>
+        ) : (
+          <TemplateGrid templates={templates} />
+        )}
       </div>
     </div>
   );

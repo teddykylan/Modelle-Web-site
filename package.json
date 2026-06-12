@@ -43,6 +43,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.11",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
@@ -51,8 +52,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "tsx": "^4.19.4"
+    "tsx": "^4.19.4",
+    "typescript": "^5"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

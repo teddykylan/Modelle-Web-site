@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useTransition } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,18 +28,21 @@ export function TemplateFilters({ categories }: TemplateFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [isPending, startTransition] = useTransition();
+
   const updateParams = useCallback(
     (key: string, value: string | null) => {
       const params = new URLSearchParams(searchParams.toString());
       if (value) params.set(key, value);
       else params.delete(key);
       params.delete("page");
-      router.push(`/templates?${params.toString()}`);
+      const href = `/templates?${params.toString()}`;
+      startTransition(() => router.replace(href));
     },
     [router, searchParams]
   );
 
-  const clearFilters = () => router.push("/templates");
+  const clearFilters = () => startTransition(() => router.replace("/templates"));
 
   return (
     <Card>
@@ -105,7 +108,7 @@ export function TemplateFilters({ categories }: TemplateFiltersProps) {
           </Select>
         </div>
 
-        <Button variant="outline" className="w-full" onClick={clearFilters}>
+        <Button variant="outline" className="w-full" onClick={clearFilters} disabled={isPending}>
           Réinitialiser
         </Button>
       </CardContent>

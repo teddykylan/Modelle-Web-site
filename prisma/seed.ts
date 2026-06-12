@@ -67,6 +67,18 @@ async function main() {
     },
   });
 
+  await prisma.payment.create({
+    data: {
+      userId: buyer.id,
+      amount: 100000,
+      currency: "XAF",
+      provider: "TEST",
+      providerId: "seed-test-buyer-100000-xaf",
+      status: "COMPLETED",
+      metadata: { note: "Solde de test fictif 100000 XAF" },
+    },
+  });
+
   const categories = await Promise.all(
     [
       { name: "Business", slug: "business", icon: "briefcase", order: 1 },
@@ -92,80 +104,13 @@ async function main() {
     )
   );
 
-  const templateData = [
-    { title: "Nova Business Pro", price: 49, featured: true, category: 0, seller: 0, tech: "Next.js" },
-    { title: "Afrique Startup", price: 39, featured: true, category: 5, seller: 0, tech: "React" },
-    { title: "Portfolio Creative", price: 29, featured: true, category: 1, seller: 1, tech: "Next.js" },
-    { title: "Shop Local CM", price: 59, featured: true, category: 2, seller: 1, tech: "Next.js" },
-    { title: "Landing SaaS Flow", price: 35, featured: false, category: 3, seller: 2, tech: "React" },
-    { title: "Blog Magazine", price: 25, featured: false, category: 4, seller: 2, tech: "Next.js" },
-    { title: "Restaurant Douala", price: 45, featured: false, category: 6, seller: 0, tech: "Vue" },
-    { title: "Agence Premium", price: 55, featured: false, category: 7, seller: 1, tech: "Next.js" },
-    { title: "Minimal Portfolio", price: 19, featured: false, category: 1, seller: 2, tech: "React" },
-    { title: "E-shop Fashion", price: 65, featured: false, category: 2, seller: 0, tech: "Next.js" },
-    { title: "SaaS Dashboard", price: 75, featured: true, category: 5, seller: 1, tech: "Next.js" },
-    { title: "Corporate Elite", price: 49, featured: false, category: 0, seller: 2, tech: "React" },
-    { title: "Food Delivery", price: 42, featured: false, category: 6, seller: 0, tech: "Next.js" },
-    { title: "Dev Portfolio", price: 22, featured: false, category: 1, seller: 1, tech: "Next.js" },
-    { title: "Launch Pro", price: 32, featured: false, category: 3, seller: 2, tech: "React" },
-  ];
-
-  for (const t of templateData) {
-    const slug = t.title
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "");
-
-    const sellerProfile = sellers[t.seller].sellerProfile!;
-
-    await prisma.template.create({
-      data: {
-        title: t.title,
-        slug,
-        description: `Template ${t.title} — design moderne 2025, responsive et optimisé SEO.`,
-        longDescription: `Un template professionnel ${t.tech} conçu pour le marché africain. Inclut pages multiples, dark mode, et documentation complète.`,
-        price: t.price,
-        discountPrice: t.price > 40 ? t.price * 0.85 : null,
-        categoryId: categories[t.category].id,
-        sellerId: sellerProfile.id,
-        status: TemplateStatus.PUBLISHED,
-        featured: t.featured,
-        demoUrl: "https://vercel.com/templates",
-        techStack: t.tech,
-        downloads: Math.floor(Math.random() * 200),
-        views: Math.floor(Math.random() * 1000),
-        tags: {
-          connect: tags.slice(0, 3).map((tag) => ({ id: tag.id })),
-        },
-        images: {
-          create: [
-            {
-              imageUrl: PLACEHOLDER_IMAGE,
-              isPrimary: true,
-              order: 0,
-              altText: t.title,
-            },
-          ],
-        },
-        files: {
-          create: {
-            fileType: "zip",
-            fileUrl: "https://example.com/template.zip",
-            fileName: `${slug}.zip`,
-            size: 5242880,
-          },
-        },
-      },
-    });
-  }
-
   console.log("Seed completed:");
   console.log(`  Admin: ${admin.email}`);
   console.log(`  Sellers: ${sellers.map((s) => s.email).join(", ")}`);
   console.log(`  Buyer: ${buyer.email}`);
+  console.log("  Buyer test funds: 100000 XAF (paiement fictif créé)");
   console.log("  Password for all: Password123!");
+  console.log("  Aucun template n'a été ajouté. Les vendeurs pourront ajouter leurs propres modèles en production.");
 }
 
 main()

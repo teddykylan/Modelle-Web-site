@@ -78,7 +78,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               {template.techStack && <Badge variant="outline">{template.techStack}</Badge>}
             </div>
             <h1 className="text-3xl font-bold">{template.title}</h1>
-            <p className="mt-2 text-muted-foreground">par {template.seller.user.name}</p>
+            <p className="mt-2 text-muted-foreground">par {template.seller?.user?.name ?? "Auteur inconnu"}</p>
           </div>
 
           <TemplatePreview demoUrl={template.demoUrl} title={template.title} />
@@ -106,6 +106,41 @@ export default async function TemplateDetailPage({ params }: PageProps) {
             </p>
           </div>
 
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-3xl border bg-card p-6">
+              <h2 className="text-lg font-semibold">Caractéristiques clés</h2>
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                <li>✓ Template prêt à l’emploi pour un lancement rapide</li>
+                <li>✓ Fichiers sources inclus et facilement personnalisables</li>
+                <li>✓ Compatible mobile et responsive</li>
+                <li>✓ Paiement sécurisé via Paystack</li>
+                <li>✓ Support vendeur et mises à jour</li>
+              </ul>
+            </div>
+            <div className="rounded-3xl border bg-card p-6">
+              <h2 className="text-lg font-semibold">Détails du template</h2>
+              <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+                <p>
+                  <span className="font-medium text-foreground">Catégorie :</span> {template.category.name}
+                </p>
+                {template.techStack && (
+                  <p>
+                    <span className="font-medium text-foreground">Technologie :</span> {template.techStack}
+                  </p>
+                )}
+                <p>
+                  <span className="font-medium text-foreground">Ventes :</span> {template.downloads}
+                </p>
+                <p>
+                  <span className="font-medium text-foreground">Auteur :</span> {template.seller?.user?.name ?? "Auteur inconnu"}
+                </p>
+                <p>
+                  <span className="font-medium text-foreground">Aperçu :</span> {template.demoUrl ? "Disponible" : "Non disponible"}
+                </p>
+              </div>
+            </div>
+          </div>
+
           {template.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {template.tags.map((tag) => (
@@ -115,6 +150,24 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               ))}
             </div>
           )}
+
+          <section className="rounded-3xl border bg-card p-6">
+            <h2 className="text-lg font-semibold mb-4">FAQ</h2>
+            <div className="space-y-4 text-sm text-muted-foreground">
+              <div>
+                <p className="font-medium">Puis-je personnaliser ce template ?</p>
+                <p className="mt-2">Oui, tous les fichiers sources sont fournis et vous pouvez adapter les couleurs, textes et images.</p>
+              </div>
+              <div>
+                <p className="font-medium">Comment télécharger mon template ?</p>
+                <p className="mt-2">Après l’achat, vous aurez accès à votre espace dashboard pour télécharger immédiatement le package.</p>
+              </div>
+              <div>
+                <p className="font-medium">Le paiement est-il sécurisé ?</p>
+                <p className="mt-2">Oui, le paiement est traité par Paystack avec support carte et Mobile Money.</p>
+              </div>
+            </div>
+          </section>
         </div>
 
         <div className="lg:sticky lg:top-24 h-fit space-y-4">
@@ -139,10 +192,10 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               isAuthenticated={!!session?.user}
             />
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <li>✓ Paiement sécurisé via Paystack</li>
+              <li>✓ Téléchargement immédiat après paiement</li>
               <li>✓ Fichiers sources inclus</li>
-              <li>✓ Mises à jour gratuites</li>
-              <li>✓ Support vendeur</li>
-              <li>✓ {template.downloads} téléchargements</li>
+              <li>✓ Support vendeur et mises à jour</li>
             </ul>
           </div>
         </div>
