@@ -5,14 +5,25 @@ import { getAppUrl } from "@/lib/app-url";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getAppUrl();
 
-  const templates = await prisma.template.findMany({
-    where: { status: "PUBLISHED" },
-    select: { slug: true, updatedAt: true },
-  }).catch(() => []);
-
-  const categories = await prisma.category.findMany({
-    select: { slug: true, createdAt: true },
-  }).catch(() => []);
+  const [templates, categories] = await Promise.all([
+    prisma.template
+      .findMany({
+        where: { status: "PUBLISHED" },
+        select: { slug: true, updatedAt: true },
+      })
+      .catch((error) => {
+        console.warn("Sitemap: impossible de charger les templates, fallback à vide.", error?.message);
+        return [];
+      }),
+    prisma.category
+      .findMany({
+        select: { slug: true, createdAt: true },
+      })
+      .catch((error) => {
+        console.warn("Sitemap: impossible de charger les catégories, fallback à vide.", error?.message);
+        return [];
+      }),
+  ]);
 
   return [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
