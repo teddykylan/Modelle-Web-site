@@ -22,6 +22,7 @@ Ce guide explique comment publier ce projet Next.js sur Netlify avec un domaine 
 4. Vérifie les paramètres de build :
    - Build command : `npm run build`
    - Publish directory : `.netlify/output`
+   - Base directory : laisse vide si ton application est à la racine du dépôt
 5. Clique sur **Deploy site**
 
 ## 4. Variables d'environnement Netlify
